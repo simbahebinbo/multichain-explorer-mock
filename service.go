@@ -24,6 +24,11 @@ type Blob struct {
 	State       string   `json:"State"`
 }
 
+type ChainBlobs struct {
+	Chain string `json:"chain"`
+	Blobs []Blob `json:"blobs"`
+}
+
 // Node represents the node data structure
 type Node struct {
 	NodeString  string `json:"node_string"`
@@ -170,25 +175,25 @@ var validators = []Validator{
 // HomeDataHandler handles the GET /api/home-data endpoint
 func HomeDataHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
+		btcBlobs := btc_blobs
+		ethBlobs := blobs
+
+		response := map[string]interface{}{
+			"result": []ChainBlobs{
+				{
+					Chain: "btc",
+					Blobs: btcBlobs,
+				},
+				{
+					Chain: "eth",
+					Blobs: ethBlobs,
+				},
+			},
+		}
+
 		w.Header().Set("Content-Type", "application/json")
-		chain := r.URL.Query().Get("chain")
-		if chain == "" {
-			http.Error(w, "Missing chain parameter", http.StatusBadRequest)
-			return
-		}
-
-		switch chain {
-
-		case "btc":
-			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode(btc_blobs)
-		case "eth":
-			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode(blobs)
-
-		default:
-			w.WriteHeader(http.StatusBadRequest)
-		}
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
 	} else {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}
