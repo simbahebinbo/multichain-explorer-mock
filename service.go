@@ -171,8 +171,24 @@ var validators = []Validator{
 func HomeDataHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(blobs)
+		chain := r.URL.Query().Get("chain")
+		if chain == "" {
+			http.Error(w, "Missing chain parameter", http.StatusBadRequest)
+			return
+		}
+
+		switch chain {
+
+		case "btc":
+			w.WriteHeader(http.StatusOK)
+			json.NewEncoder(w).Encode(btc_blobs)
+		case "eth":
+			w.WriteHeader(http.StatusOK)
+			json.NewEncoder(w).Encode(blobs)
+
+		default:
+			w.WriteHeader(http.StatusBadRequest)
+		}
 	} else {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}
