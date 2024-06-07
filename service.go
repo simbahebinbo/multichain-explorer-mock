@@ -229,7 +229,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		query := r.URL.Query().Get("q")
 		category := r.URL.Query().Get("category")
 
-		if query == "" || category == "" {
+		if query == "" {
 			http.Error(w, "Missing query or category parameter", http.StatusBadRequest)
 			return
 		}
@@ -415,7 +415,7 @@ func BlobDetailHandler(w http.ResponseWriter, r *http.Request)  {
 		blobID := vars["blobID"]
 		chain := vars["chain"]
 
-		if chain != "btc" && chain != "eth" {
+		if chain != "btc" || chain != "eth" {
 			http.Error(w, "Invalid chain parameter", http.StatusBadRequest)
 			return
 		}
