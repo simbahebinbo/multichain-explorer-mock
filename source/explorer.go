@@ -414,8 +414,10 @@ func BlobDetailHandler(w http.ResponseWriter, r *http.Request)  {
 		vars := mux.Vars(r)
 		blobID := vars["blobID"]
 		chain := vars["chain"]
-
+		fmt.Println(fmt.Sprintf("*********** %v", vars))
+		
 		if chain != "btc" || chain != "eth" {
+			fmt.Println("parameter error")
 			http.Error(w, "Invalid chain parameter", http.StatusBadRequest)
 			return
 		}
@@ -490,6 +492,6 @@ func main() {
 	r.HandleFunc("/api/blob-detail", BlobDetailHandler)
 	r.HandleFunc("/api/nodes", NodesHandler)
 	r.HandleFunc("/api/getValidator", GetValidatorHandler)
-	fmt.Println("Server is running on port 8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	fmt.Println("Server is running on port 28080")
+	log.Fatal(http.ListenAndServe(":28080", r))
 }
