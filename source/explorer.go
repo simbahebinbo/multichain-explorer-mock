@@ -411,12 +411,11 @@ func EthBlobsHandler(w http.ResponseWriter, r *http.Request) {
 
 func BlobDetailHandler(w http.ResponseWriter, r *http.Request)  {
 	if r.Method == http.MethodGet {
-		vars := mux.Vars(r)
-		blobID := vars["blobID"]
-		chain := vars["chain"]
-		fmt.Println(fmt.Sprintf("*********** %v", vars))
+		blobID := r.URL.Query().Get("blobID")
+		chain := r.URL.Query().Get("chain")
+		fmt.Println(fmt.Sprintf("*********** %v %v", blobID, chain))
 		
-		if chain != "btc" || chain != "eth" {
+		if chain != "btc" && chain != "eth" {
 			fmt.Println("parameter error")
 			http.Error(w, "Invalid chain parameter", http.StatusBadRequest)
 			return
